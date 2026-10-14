@@ -35,6 +35,19 @@
 
 VisoMaster guide သည် အဓိကအားဖြင့် **မျက်နှာ/ခေါင်းပိုင်း** ကို ပြုပြင်ရန်ဖြစ်ပြီး လူ၏ ကိုယ်ခန္ဓာပုံစံ၊ pose၊ တစ်ကိုယ်လုံးအဝတ်အစား သို့မဟုတ် scene တစ်ခုလုံးကို ယုံကြည်စိတ်ချစွာ ပြောင်းရန် မဟုတ်ပါ။ Full-body wardrobe transformation လိုအပ်ပါက source video motion ကို ထိန်းသိမ်းနိုင်သည့် video-to-video/whole-character tool ကို စစ်ဆေးပြီး [`Higgsfield Genjutsu reference`](references/higgsfield-genjutsu.md) ကို workflow ခွဲခြားစဉ်းစားရန်သာ အသုံးပြုပါ။ လက်ရှိ tool တွင် အဲဒီစွမ်းရည် မရှိပါက အဲဒီအချက်ကို ရှင်းပြပြီး face-only swap ကို အစားထိုးအဖြစ် တိတ်တဆိတ် မသုံးပါနှင့်။
 
+## Remote VS Code Server-ээр алсын GPU машинд ашиглах
+
+VS Code Server/Remote Tunnels нь алсын машин дээрх VS Code editor болон terminal-д холбогдох боломж өгдөг. Энэ нь VisoMaster суулгахгүй, GPU/VRAM нэмэхгүй, мөн graphical desktop-ийг remote-desktop маягаар дамжуулахгүй. Тушаал болон видео боловсруулалт алсын host дээр ажиллах тул тухайн host өөрөө VisoMaster-ийн дэмждэг OS, ажиллах GPU/driver, RAM болон disk space-тай байх ёстой. Microsoft-ийн баримтаар нэг VS Code Server instance нь нэг user/client-д зориулагдсан; бусдад зориулсан hosted service болгон санал болгохыг license зөвшөөрдөггүй ([VS Code Server docs](https://code.visualstudio.com/docs/remote/vscode-server), [license terms](https://aka.ms/vscode-server-license)).
+
+1. **Алсын host-оо бэлд.** VisoMaster Fusion болон шаардлагатай model weights-ийг тухайн OS-д зориулсан албан ёсны зааврын дагуу суулга. Апп GPU-г үнэхээр таньж байгааг шалга. Model weights-ийн тусгай license-ийг мөн унш.
+2. **GUI шаардлагыг шалга.** VS Code Server нь code/editor/terminal access болохоос VisoMaster-ийн цонхыг харуулах баталгаа биш. Хэрэв суулгасан VisoMaster workflow graphical UI шаардвал тусдаа, зөвшөөрөгдсөн remote-desktop арга хэрэглэх эсвэл VisoMaster-ийн албан ёсоор баримтжуулсан CLI/headless горимыг ашигла. Тийм горим байна гэж таамаглан тушаал зохиож болохгүй.
+3. **Хувийн tunnel нээ.** Алсын host дээр Microsoft-ийн [Remote Tunnels зааврыг](https://code.visualstudio.com/docs/remote/tunnels) дагаж `code tunnel` CLI-г ажиллуулах эсвэл VS Code UI-аас **Turn on Remote Tunnel Access**-ийг сонго. License-ийн нөхцөлийг уншаад зөвшөөр; анхны тохиргоог license-ийн мэдэгдлийг алгасуулан автоматжуулахгүй.
+4. **Өөрийн VS Code client-оос холбо.** Tunnel үүсгэсэнтэй ижил нэвтрэх account-аар баталгаажуулаад Command Palette-аас **Remote Tunnels: Connect to Tunnel**-ийг сонгон remote workspace-ийг нээ. Тэндээс файл, terminal болон GPU status-ийг шалгана; туннель өөрөө GPU-г дамжуулахгүй.
+5. **Богино тестээс эхэл.** Remote host дээр эх видеоны copy ашиглаж хэдхэн секундын хүнд хэсгийг туршаад [`VisoMaster pipeline guide`](references/visomaster-pipeline.md)-ийн track, mask, output review дарааллыг дага. Source, face cards/embeddings болон output-ийг зөвшөөрөлтэй remote disk дээр хамгаалж хадгал.
+6. **Ажлаа дуусгахад tunnel-ээ зогсоо.** CLI tunnel-ийг ажиллуулсан terminal дээр `Ctrl+C` дар, эсвэл VS Code UI-аас tunnel-ийг унтраа. Нэг instance-д олон хүн зэрэг холбохгүй, бусдад үйлчилгээ болгон share/host хийхгүй; tunnel-ийг зөвхөн өөрийн эрхтэй development session-д ашигла.
+
+Face footage, face cards болон embeddings нь эмзэг мэдээлэл тул remote workspace-ийн access ба хадгалах хугацааг хязгаарла. Хүсвэл Microsoft-ийн баримтад дурдсан `code tunnel --disable-telemetry` сонголтоор VS Code Server telemetry-г унтрааж болно; энэ нь VisoMaster болон бусад extension-ийн telemetry тохиргоог өөрчлөхгүй ([telemetry guidance](https://code.visualstudio.com/docs/remote/vscode-server#_telemetry)).
+
 ## Repo ကို ယူသုံးရန်
 
 ```bash
